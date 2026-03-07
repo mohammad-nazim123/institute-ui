@@ -1,7 +1,9 @@
+import API_URL from "../config"
+
 export function getInstitutes(){
     // const accessToken = localStorage.getItem('my_token');
     // console.log("accessToken",accessToken);
-    return fetch('http://localhost:8000/institutes/institute/', {
+    return fetch(`${API_URL}/institutes/institute/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -17,7 +19,7 @@ export function getInstitutes(){
 }
 
 export function addInstitute(name){
-    return fetch('http://localhost:8000/institutes/institute/', {
+    return fetch(`${API_URL}/institutes/institute/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +37,7 @@ export async function getVarifiedInstitutes(instituteName,adminId){
         name: instituteName,
         admin_key: adminId
     }
-    return await fetch('http://localhost:8000/institutes/verify/', {
+    return await fetch(`${API_URL}/institutes/verify/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)

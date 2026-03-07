@@ -1,9 +1,9 @@
 import { getInstitute, getAdminKey, getProfessorKey } from '../../utils/storage';
-
+import API_URL from  '../config'
 export const addProfessor = async (payload) => {
     console.log("payload", payload);
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/professors/professors/?institute=${institute}`, {
+    return await fetch(`${API_URL}/professors/professors/?institute=${institute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const addProfessor = async (payload) => {
 
 export const getProfessors = async () => {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/professors/professors/?institute=${institute}`, {
+    return await fetch(`${API_URL}/professors/professors/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export async function getProfessorId(email, uniqueId, institute) {
         institute_name: institute
     };
     console.log("data", data);
-    return await fetch(`http://localhost:8000/professors/verify/`, {
+    return await fetch(`${API_URL}/professors/verify/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -44,7 +44,7 @@ export async function getProfessorId(email, uniqueId, institute) {
 
 export async function getProfessor(id) {
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/professors/professors/${id}/?institute=${institute}`, {
+    return await fetch(`${API_URL}/professors/professors/${id}/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export async function getProfessor(id) {
 
 export async function getStudents() {
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/admin_students/students/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_students/students/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export async function getStudents() {
 export async function markAttendance(payload) {
     console.log("payload", payload);
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/attendance/attendance/mark/?institute=${institute}`, {
+    return await fetch(`${API_URL}/attendance/attendance/mark/?institute=${institute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export async function markAttendance(payload) {
 
 export async function getAttendance(id) {
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/attendance/attendance/student/${id}/?institute=${institute}`, {
+    return await fetch(`${API_URL}/attendance/attendance/student/${id}/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export async function getAttendance(id) {
 
 export async function getSchedule() {
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/schedules/weekly-day/?institute=${institute}`, {
+    return await fetch(`${API_URL}/schedules/weekly-day/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export async function getSchedule() {
 
 export async function getExamSchedule() {
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/schedules/exam-date/?institute=${institute}`, {
+    return await fetch(`${API_URL}/schedules/exam-date/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export async function getExamSchedule() {
 
 export async function getPayments() {
     const [institute, profKey] = await Promise.all([getInstitute(), getProfessorKey()]);
-    return await fetch(`http://localhost:8000/admin_payments/professors-payments/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_payments/professors-payments/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

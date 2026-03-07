@@ -1,10 +1,10 @@
 import { getInstitute, getAdminKey } from '../../utils/storage';
 import { getStudentUniqueId, getProfessorKey } from '../../utils/storage';
-
+import API_URL from '../config';
 export async function createSchedule(schedule) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
 
-    return await fetch(`http://localhost:8000/schedules/weekly-day/?institute=${institute}`, {
+    return await fetch(`${API_URL}/schedules/weekly-day/?institute=${institute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function getSchedule() {
         ? { 'Content-Type': 'application/json', "x-personal-key": profKey }
         : { 'Content-Type': 'application/json', "X-Personal-Key": studentKey };
 
-    return await fetch(`http://localhost:8000/schedules/weekly-day/?institute=${institute}`, {
+    return await fetch(`${API_URL}/schedules/weekly-day/?institute=${institute}`, {
         method: 'GET',
         headers,
     })
@@ -34,7 +34,7 @@ export async function getSchedule() {
 
 export async function createExamSchedule(exam) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/schedules/exam-date/?institute=${institute}`, {
+    return await fetch(`${API_URL}/schedules/exam-date/?institute=${institute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export async function getExamSchedule() {
         ? { 'Content-Type': 'application/json', "x-personal-key": profKey }
         : { 'Content-Type': 'application/json', "X-Personal-Key": studentKey };
 
-    return await fetch(`http://localhost:8000/schedules/exam-date/?institute=${institute}`, {
+    return await fetch(`${API_URL}/schedules/exam-date/?institute=${institute}`, {
         method: 'GET',
         headers,
     })

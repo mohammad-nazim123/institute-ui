@@ -1,7 +1,7 @@
 import { getToken, getRefreshToken, removeToken, removeRefreshToken } from '../../utils/storage';
-
+import API_URL from '../config';
 export async function signUp(email, password, password2) {
-    return await fetch('http://localhost:8000/auth/sign_up/', {
+    return await fetch(`${API_URL}/auth/sign_up/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, password2 })
@@ -10,7 +10,7 @@ export async function signUp(email, password, password2) {
 }
 
 export async function signIn(email, password) {
-    return await fetch('http://localhost:8000/auth/login/', {
+    return await fetch(`${API_URL}/auth/login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -22,7 +22,7 @@ export async function signOut() {
     const accessToken = await getToken();
     const refreshToken = await getRefreshToken();
 
-    return await fetch('http://localhost:8000/auth/logout/', {
+    return await fetch(`${API_URL}/auth/logout/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

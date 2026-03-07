@@ -1,8 +1,8 @@
 import { getInstitute, getAdminKey } from '../../utils/storage';
-
+import API_URL from '../config';
 export async function addPayments(professorId, monthYear, paymentDate, paymentAmount, paymentStatus) {
     const [instituteId, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/admin_payments/upsert/?institute=${instituteId}`, {
+    return await fetch(`${API_URL}/admin_payments/upsert/?institute=${instituteId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ export async function addPayments(professorId, monthYear, paymentDate, paymentAm
 
 export async function getPayments() {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/admin_payments/professors-payments/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_payments/professors-payments/?institute=${institute}`, {
         headers: {
             'Content-Type': 'application/json',
             'X-Admin-Key': adminKey
