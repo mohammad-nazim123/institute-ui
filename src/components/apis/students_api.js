@@ -1,8 +1,8 @@
 import { getInstitute, getAdminKey, getStudentUniqueId } from '../../utils/storage';
-
+import API_URL from '../config';
 export async function getStudents(uniqueId) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/admin_students/students/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_students/students/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ export async function getStudents(uniqueId) {
 
 export async function addStudent(student) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/admin_students/students/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_students/students/?institute=${institute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export async function updateAmount(id, payment, pending) {
         }
     };
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    const res = await fetch(`http://localhost:8000/admin_students/students/${id}/?institute=${institute}`, {
+    const res = await fetch(`${API_URL}/admin_students/students/${id}/?institute=${institute}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export async function getStudentId(email, uniqueId, instituteId) {
     };
     // Use the passed-in instituteId first; fall back to encrypted storage
     const institute = instituteId ?? await getInstitute();
-    return await fetch(`http://localhost:8000/admin_students/verify/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_students/verify/?institute=${institute}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -64,7 +64,7 @@ export async function getStudentId(email, uniqueId, instituteId) {
 
 export async function getStudent(id) {
     const studentUniqueId = await getStudentUniqueId();
-    return await fetch(`http://localhost:8000/admin_students/students/${id}/`, {
+    return await fetch(`${API_URL}/admin_students/students/${id}/`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json',
             "X-Personal-Key": studentUniqueId
@@ -74,7 +74,7 @@ export async function getStudent(id) {
 
 export async function updateStudent(id, student) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/admin_students/students/${id}/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_students/students/${id}/?institute=${institute}`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',

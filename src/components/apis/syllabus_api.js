@@ -1,8 +1,8 @@
 import { getInstitute, getAdminKey } from '../../utils/storage';
-
+import API_URL from '../config';
 export async function getSyllabus() {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/syllabus/course/?institute=${institute}`, {
+    return await fetch(`${API_URL}/syllabus/course/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function createSyllabus(name, subject, unit) {
             "unit": unit
         }]
     };
-    return await fetch(`http://localhost:8000/syllabus/course/?institute=${institute}`, {
+    return await fetch(`${API_URL}/syllabus/course/?institute=${institute}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function createSyllabus(name, subject, unit) {
 export async function assignSubject(studentId, subjectsToAssign) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
     return await fetch(
-        `http://localhost:8000/admin_students/subjects/${studentId}/?institute=${institute}`,
+        `${API_URL}/admin_students/subjects/${studentId}/?institute=${institute}`,
         {
             method: 'POST',
             headers: {
@@ -63,7 +63,7 @@ export async function assignSubject(studentId, subjectsToAssign) {
 export async function getStudentSubjects(studentId) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
     return await fetch(
-        `http://localhost:8000/admin_students/subjects/${studentId}/?institute=${institute}`,
+        `${API_URL}/admin_students/subjects/${studentId}/?institute=${institute}`,
         {
             method: 'GET',
             headers: {

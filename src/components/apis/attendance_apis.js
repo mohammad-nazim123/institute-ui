@@ -1,8 +1,9 @@
 import { getInstitute, getAdminKey } from '../../utils/storage';
+import API_URL from '../config';
 
 export async function getSyllabus() {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/syllabus/course/?institute=${institute}`, {
+    return await fetch(`${API_URL}/syllabus/course/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -17,7 +18,7 @@ export async function getSyllabus() {
 
 export async function getStudents(uniqueId) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/admin_students/students/?institute=${institute}`, {
+    return await fetch(`${API_URL}/admin_students/students/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -28,7 +29,7 @@ export async function getStudents(uniqueId) {
 
 export async function getAttendance(id) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
-    return await fetch(`http://localhost:8000/attendance/attendance/student/${id}/?institute=${institute}`, {
+    return await fetch(`${API_URL}/attendance/attendance/student/${id}/?institute=${institute}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ export async function getAttendance(id) {
 export async function getStudentAttendanceByMonth(studentId, month) {
     const [institute, adminKey] = await Promise.all([getInstitute(), getAdminKey()]);
     return await fetch(
-        `http://localhost:8000/attendance/attendance/student/${studentId}/?institute=${institute}&month=${month}`,
+        `${API_URL}/attendance/attendance/student/${studentId}/?institute=${institute}&month=${month}`,
         {
             method: 'GET',
             headers: {
