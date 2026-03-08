@@ -214,22 +214,22 @@ const Dashboard = () => {
       sx={{
         display: 'flex',
         width: '100%',
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: '100vh',
         background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)',
       }}
     >
-      {/* Left Panel - 25% */}
+      {/* Left Panel - hidden on mobile */}
       <Box
         sx={{
-          width: { xs: '100%', md: '15%' },
-          minWidth: { md: '320px' },
-          height: '100%',
+          width: { xs: '0', md: '15%' },
+          minWidth: { md: '260px' },
+          height: '100vh',
           background: 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
           padding: 4,
-          display: 'flex',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
-          position: 'relative',
+          position: 'sticky',
+          top: 0,
           overflow: 'hidden',
         }}
       >
@@ -302,11 +302,11 @@ const Dashboard = () => {
         </Typography>
       </Box>
 
-      {/* Right Panel - 75% */}
+      {/* Right Panel */}
       <Box
         sx={{
           width: { xs: '100%', md: '85%' },
-          height: '100%',
+          minHeight: '100vh',
           padding: { xs: 3, md: 6 },
           display: 'flex',
           flexDirection: 'column',
@@ -341,11 +341,12 @@ const Dashboard = () => {
           <LogoutIcon sx={{ fontSize: 20 }} />
         </IconButton>
         {/* Header */}
-        <Box sx={{ mb: 6, textAlign: 'center' }}>
+        <Box sx={{ mb: { xs: 4, md: 6 }, textAlign: 'center' }}>
           <Typography
             variant="h3"
             sx={{
               fontWeight: 800,
+              fontSize: { xs: '1.8rem', sm: '2.2rem', md: '3rem' },
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -354,7 +355,7 @@ const Dashboard = () => {
           >
             Welcome to Dashboard
           </Typography>
-          <Typography sx={{ color: '#666', fontSize: '1.1rem' }}>
+          <Typography sx={{ color: '#666', fontSize: { xs: '0.95rem', md: '1.1rem' } }}>
             Choose your role to continue
           </Typography>
         </Box>

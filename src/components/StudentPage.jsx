@@ -21,6 +21,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Drawer,
 } from '@mui/material';
 import {
   MoreVert as MoreIcon,
@@ -41,6 +42,7 @@ import {
   Logout as LogoutIcon,
   LocationOn as LocationIcon,
   Class as ClassIcon,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import { QRCodeSVG } from 'qrcode.react';
 import { useNavigate,useLocation} from 'react-router-dom';
@@ -262,6 +264,63 @@ const ScheduleCard = ({ item, index }) => (
   </Paper>
 );
 
+/* ═══════════════════ Sidebar (shared between desktop + mobile Drawer) ═══════════════════ */
+const SidebarInner = ({ student, navigate, onClose }) => (
+  <Box
+    sx={{
+      width: '100%',
+      height: '100%',
+      background: g.sidebar,
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      overflow: 'hidden',
+    }}
+  >
+    <Box sx={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,.07)' }} />
+    <Box sx={{ position: 'absolute', bottom: '30%', left: -30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,.05)', animation: 'float 8s ease-in-out infinite' }} />
+
+    <Box sx={{ p: 2, pb: 0, zIndex: 1 }}>
+      <IconButton
+        onClick={() => { navigate('/dashboard'); onClose(); }}
+        sx={{ color: 'rgba(255,255,255,.75)', background: 'rgba(255,255,255,.1)', '&:hover': { background: 'rgba(255,255,255,.2)' }, borderRadius: '12px' }}
+      >
+        <BackIcon />
+      </IconButton>
+    </Box>
+
+    <Box sx={{ flex: 1, overflowY: 'auto', px: 3, pb: 3, zIndex: 1, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,.25)', borderRadius: 2 } }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 1, mb: 3 }}>
+        <Avatar sx={{ width: 100, height: 100, background: 'rgba(255,255,255,.18)', border: '4px solid rgba(255,255,255,.35)', fontSize: '2.2rem', fontWeight: 700, mb: 1.5, boxShadow: '0 8px 30px rgba(0,0,0,.2)' }}>
+          {student.name ? student.name[0] : ''}
+        </Avatar>
+        <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.15rem', textAlign: 'center' }}>{student?.name}</Typography>
+        <Chip label={student?.year} size="small" sx={{ mt: 0.8, background: 'rgba(255,255,255,.18)', color: '#fff', fontWeight: 600, fontSize: '0.78rem', backdropFilter: 'blur(6px)' }} />
+      </Box>
+
+      <InfoRow icon={<BadgeIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Roll Number" value={student.admission_details ? student.admission_details.roll_number : ''} />
+      <InfoRow icon={<ClassIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Enrollment No" value={student.admission_details ? student.admission_details.enrollment_number : ''} />
+      <InfoRow icon={<SchoolIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Course & Branch" value={`${student.course_details ? student.course_details.course_name : ''}\n${student.course_details ? student.course_details.branch : ''}`} />
+      <InfoRow icon={<CalendarIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Current Year" value={student.admission_details ? student.admission_details.year : ''} />
+
+      <Box sx={{ mt: 2, mb: 2 }}>
+        <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.8px', mb: 1 }}>Subjects</Typography>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.7 }}>
+          {studentData.subjects.map((s) => (
+            <Chip key={s} label={s} size="small" sx={{ background: 'rgba(255,255,255,.12)', color: '#fff', fontSize: '0.72rem', fontWeight: 500, backdropFilter: 'blur(4px)', '&:hover': { background: 'rgba(255,255,255,.22)' } }} />
+          ))}
+        </Box>
+      </Box>
+
+      <InfoRow icon={<LocationIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Current Address" value={student.contact_details ? student.contact_details.current_address : ''} />
+    </Box>
+
+    <Typography sx={{ textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: '0.7rem', py: 1.5, zIndex: 1 }}>
+      EduConnect • Student Portal
+    </Typography>
+  </Box>
+);
+
 /* ═══════════════════ Main Component ═══════════════════ */
 const StudentPage = () => {
   useEffect(() => {
@@ -271,7 +330,8 @@ const StudentPage = () => {
   const navigate = useNavigate();
   const [tabIdx, setTabIdx] = useState(0);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [student,setStudent] = useState([]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [student,setStudent] = useState([]); 
   const [schedule,setSchedule] = useState([]);
   const [examSchedule,setExamSchedule] = useState([]);
 
@@ -337,121 +397,42 @@ const StudentPage = () => {
   });
 
   return (
-    <Box sx={{ display: 'flex', width: '100%', height: '100vh', overflow: 'hidden', background: '#f0f2f5' }}>
-      {/* ────── LEFT SIDEBAR (20%) ────── */}
+    <Box sx={{ display: 'flex', width: '100%', minHeight: '100vh', background: '#f0f2f5' }}>
+      {/* ────── MOBILE DRAWER ────── */}
+      <Drawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: 'block', md: 'none' }, '& .MuiDrawer-paper': { width: 280, border: 'none' } }}
+      >
+        <SidebarInner student={student} navigate={navigate} onClose={() => setMobileOpen(false)} />
+      </Drawer>
+
+      {/* ────── LEFT SIDEBAR (desktop only) ────── */}
       <Box
         sx={{
           width: '20%',
           minWidth: 280,
           maxWidth: 340,
-          height: '100%',
+          height: '100vh',
           background: g.sidebar,
-          display: 'flex',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
-          position: 'relative',
+          position: 'sticky',
+          top: 0,
           overflow: 'hidden',
         }}
       >
-        {/* Decorative circles */}
-        <Box sx={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,.07)' }} />
-        <Box sx={{ position: 'absolute', bottom: '30%', left: -30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,.05)', animation: 'float 8s ease-in-out infinite' }} />
-
-        {/* Back Button */}
-        <Box sx={{ p: 2, pb: 0, zIndex: 1 }}>
-          <IconButton
-            onClick={() => navigate('/dashboard')}
-            sx={{
-              color: 'rgba(255,255,255,.75)',
-              background: 'rgba(255,255,255,.1)',
-              '&:hover': { background: 'rgba(255,255,255,.2)' },
-              borderRadius: '12px',
-            }}
-          >
-            <BackIcon />
-          </IconButton>
-        </Box>
-
-        {/* Scrollable content */}
-        <Box sx={{ flex: 1, overflowY: 'auto', px: 3, pb: 3, zIndex: 1, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,.25)', borderRadius: 2 } }}>
-          {/* Avatar + name */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 1, mb: 3 }}>
-            <Avatar
-              sx={{
-                width: 100,
-                height: 100,
-                background: 'rgba(255,255,255,.18)',
-                border: '4px solid rgba(255,255,255,.35)',
-                fontSize: '2.2rem',
-                fontWeight: 700,
-                mb: 1.5,
-                boxShadow: '0 8px 30px rgba(0,0,0,.2)',
-              }}
-            >
-              {student.name?student.name[0]:''}
-            </Avatar>
-            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.15rem', textAlign: 'center' }}>
-              {student?.name}
-            </Typography>
-            <Chip
-              label={student?.year}
-              size="small"
-              sx={{
-                mt: 0.8,
-                background: 'rgba(255,255,255,.18)',
-                color: '#fff',
-                fontWeight: 600,
-                fontSize: '0.78rem',
-                backdropFilter: 'blur(6px)',
-              }}
-            />
-          </Box>
-
-          {/* Info rows */}
-          <InfoRow icon={<BadgeIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Roll Number" value={student.admission_details?student.admission_details.roll_number:''} />
-          <InfoRow icon={<ClassIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Enrollment / Faculty No" value={`${student.admission_details?student.admission_details.enrollment_number:''}`} />
-          <InfoRow icon={<SchoolIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Course & Branch" value={`${student.course_details?student.course_details.course_name:''}\n${student.course_details?student.course_details.branch:''}`} />
-          <InfoRow icon={<CalendarIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Current Year" value={student.admission_details?student.admission_details.year:''} />
-
-          {/* Subjects */}
-          <Box sx={{ mt: 2, mb: 2 }}>
-            <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.8px', mb: 1 }}>
-              Subjects
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.7 }}>
-              {studentData.subjects.map((s) => (
-                <Chip
-                  key={s}
-                  label={s}
-                  size="small"
-                  sx={{
-                    background: 'rgba(255,255,255,.12)',
-                    color: '#fff',
-                    fontSize: '0.72rem',
-                    fontWeight: 500,
-                    backdropFilter: 'blur(4px)',
-                    '&:hover': { background: 'rgba(255,255,255,.22)' },
-                  }}
-                />
-              ))}
-            </Box>
-          </Box>
-
-          {/* Address */}
-          <InfoRow icon={<LocationIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Current Address" value={student.contact_details?student.contact_details.current_address:''} />
-        </Box>
-
-        {/* Bottom */}
-        <Typography sx={{ textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: '0.7rem', py: 1.5, zIndex: 1 }}>
-          EduConnect • Student Portal
-        </Typography>
+        <SidebarInner student={student} navigate={navigate} onClose={() => {}} />
       </Box>
 
-      {/* ────── RIGHT PANEL (80%) ────── */}
-      <Box sx={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+      {/* ────── RIGHT PANEL ────── */}
+      <Box sx={{ flex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Top Bar */}
         <Box
           sx={{
-            px: 4,
+            px: { xs: 2, md: 4 },
             py: 2,
             display: 'flex',
             alignItems: 'center',
@@ -461,11 +442,18 @@ const StudentPage = () => {
             boxShadow: '0 2px 12px rgba(0,0,0,.03)',
           }}
         >
-          <Box>
-            <Typography sx={{ fontWeight: 800, fontSize: '1.35rem', background: g.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Hamburger — mobile only */}
+            <IconButton
+              onClick={() => setMobileOpen(true)}
+              sx={{ display: { xs: 'flex', md: 'none' }, color: '#667eea', mr: 1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.35rem' }, background: g.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               {student?student.name:''}
             </Typography>
-            <Typography sx={{ color: '#888', fontSize: '0.85rem' }}>
+            <Typography sx={{ color: '#888', fontSize: '0.85rem', display: { xs: 'none', sm: 'block' } }}>
               {student.course_details?student.course_details.course_name:''}
             </Typography>
           </Box>
@@ -488,15 +476,17 @@ const StudentPage = () => {
         </Box>
 
         {/* Tabs */}
-        <Box sx={{ px: 4, pt: 2, background: '#fff' }}>
+        <Box sx={{ px: { xs: 1, md: 4 }, pt: 2, background: '#fff' }}>
           <Tabs
             value={tabIdx}
             onChange={(_, v) => setTabIdx(v)}
+            variant="scrollable"
+            scrollButtons="auto"
             sx={{
               '& .MuiTab-root': {
                 textTransform: 'none',
                 fontWeight: 600,
-                fontSize: '0.95rem',
+                fontSize: { xs: '0.85rem', md: '0.95rem' },
                 minHeight: 48,
                 color: '#888',
                 '&.Mui-selected': { color: '#667eea' },
@@ -510,7 +500,7 @@ const StudentPage = () => {
         </Box>
 
         {/* Tab Content */}
-        <Box sx={{ flex: 1, overflow: 'auto', px: 4, py: 3 }}>
+        <Box sx={{ flex: 1, overflow: 'auto', px: { xs: 1.5, md: 4 }, py: 3 }}>
           {/* ── Daily Schedule Tab ── */}
           {tabIdx === 0 && (
             <Box

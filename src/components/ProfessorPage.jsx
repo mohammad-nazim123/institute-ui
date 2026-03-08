@@ -23,6 +23,7 @@ import {
   TableRow,
   Checkbox,
   Switch,
+  Drawer,
 } from '@mui/material';
 import {
   MoreVert as MoreIcon,
@@ -50,6 +51,7 @@ import {
   Save as SaveIcon,
   Star as StarIcon,
   BeachAccess as HolidayIcon,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import { useNavigate,useLocation } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
@@ -248,6 +250,42 @@ const ScheduleCard = ({ item, index }) => (
   </Paper>
 );
 
+/* ═══════════════════ Sidebar (shared desktop + Drawer) ═══════════════════ */
+const ProfSidebarInner = ({ professorDetails, navigate, onClose }) => (
+  <Box sx={{ width: '100%', height: '100%', background: g.sidebar, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+    <Box sx={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,.07)' }} />
+    <Box sx={{ position: 'absolute', bottom: '30%', left: -30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,.05)', animation: 'float 8s ease-in-out infinite' }} />
+
+    <Box sx={{ flex: 1, overflowY: 'auto', px: 3, pb: 3, zIndex: 1, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,.25)', borderRadius: 2 } }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3, mb: 3 }}>
+        <Avatar sx={{ width: 100, height: 100, background: 'rgba(255,255,255,.18)', border: '4px solid rgba(255,255,255,.35)', fontSize: '2.2rem', fontWeight: 700, mb: 1.5, boxShadow: '0 8px 30px rgba(0,0,0,.2)' }}>
+          {professorDetails ? professorDetails.name[0] : ''}
+        </Avatar>
+        <Chip label={professorDetails ? professorDetails.experience.designation : ''} size="small" sx={{ mt: 0.8, background: 'rgba(255,255,255,.18)', color: '#fff', fontWeight: 600, fontSize: '0.78rem', backdropFilter: 'blur(6px)' }} />
+      </Box>
+
+      <InfoRow icon={<BadgeIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Employee / Faculty ID" value={professorDetails ? professorDetails.admin_employement.employee_id : ''} />
+      <InfoRow icon={<DeptIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Department" value={professorDetails ? professorDetails.experience.department : ''} />
+      <InfoRow icon={<StarIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Designation" value={professorDetails ? professorDetails.experience.designation : ''} />
+      <InfoRow icon={<ExpIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Experience" value={professorDetails ? professorDetails.experience.teaching_experience : ''} />
+      <InfoRow icon={<PhoneIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Phone" value={professorDetails ? professorDetails.phone_number : ''} />
+      <InfoRow icon={<EmailIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Email" value={professorDetails ? professorDetails.email : ''} />
+      <InfoRow icon={<LocationIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Address" value={professorDetails ? professorDetails.address.current_address : ''} />
+
+      <Box sx={{ mt: 2, mb: 2 }}>
+        <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.8px', mb: 1 }}>Subjects Handled</Typography>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.7 }}>
+          {professorData.subjects.map((s) => (
+            <Chip key={s} label={s} size="small" sx={{ background: 'rgba(255,255,255,.12)', color: '#fff', fontSize: '0.72rem', fontWeight: 500, backdropFilter: 'blur(4px)', '&:hover': { background: 'rgba(255,255,255,.22)' } }} />
+          ))}
+        </Box>
+      </Box>
+    </Box>
+
+    <Typography sx={{ textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: '0.7rem', py: 1.5, zIndex: 1 }}>EduConnect • Faculty Portal</Typography>
+  </Box>
+);
+
 /* ═══════════════════ Main Component ═══════════════════ */
 const ProfessorPage = () => {
   useEffect(() => {
@@ -256,6 +294,7 @@ const ProfessorPage = () => {
 
   const navigate = useNavigate();
   const [tabIdx, setTabIdx] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const [moreOpen, setMoreOpen] = useState(false);
   const [professorDetails, setProfessorDetails] = useState(null);
@@ -442,96 +481,38 @@ const ProfessorPage = () => {
   });
 
   return (
-    <Box sx={{ display: 'flex', width: '100%', height: '100vh', overflow: 'hidden', background: '#f0f2f5' }}>
-      {/* ────── LEFT SIDEBAR (20%) ────── */}
-      <Box
-        sx={{
-          width: '20%', minWidth: 280, maxWidth: 340, height: '100%',
-          background: g.sidebar,
-          display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden',
-        }}
+    <Box sx={{ display: 'flex', width: '100%', minHeight: '100vh', background: '#f0f2f5' }}>
+      {/* Mobile Drawer */}
+      <Drawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: 'block', md: 'none' }, '& .MuiDrawer-paper': { width: 280, border: 'none' } }}
       >
-        <Box sx={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,.07)' }} />
-        <Box sx={{ position: 'absolute', bottom: '30%', left: -30, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,.05)', animation: 'float 8s ease-in-out infinite' }} />
+        <ProfSidebarInner professorDetails={professorDetails} navigate={navigate} onClose={() => setMobileOpen(false)} />
+      </Drawer>
 
-        {/* Back */}
-        {/* <Box sx={{ p: 2, pb: 0, zIndex: 1 }}>
-          <IconButton
-            onClick={() => navigate('/dashboard')}
-            sx={{
-              color: 'rgba(255,255,255,.75)', background: 'rgba(255,255,255,.1)',
-              '&:hover': { background: 'rgba(255,255,255,.2)' }, borderRadius: '12px',
-            }}
-          >students
-            <BackIcon />
-          </IconButton>
-        </Box> */}
-
-        {/* Scrollable */}
-        <Box sx={{ flex: 1, overflowY: 'auto', px: 3, pb: 3, zIndex: 1, '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,.25)', borderRadius: 2 } }}>
-          {/* Avatar */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 1, mb: 3 }}>
-            <Avatar
-              sx={{
-                width: 100, height: 100, background: 'rgba(255,255,255,.18)',
-                border: '4px solid rgba(255,255,255,.35)', fontSize: '2.2rem', fontWeight: 700,
-                mb: 1.5, boxShadow: '0 8px 30px rgba(0,0,0,.2)',
-              }}
-            >
-              {professorDetails?professorDetails.name[0]:''}
-            </Avatar>
-            {/* <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.15rem', textAlign: 'center' }}>
-              {professorDetails?professorDetails.name:''}
-            </Typography> */}
-            <Chip
-              label={professorDetails?professorDetails.experience.designation:''}
-              size="small"
-              sx={{ mt: 0.8, background: 'rgba(255,255,255,.18)', color: '#fff', fontWeight: 600, fontSize: '0.78rem', backdropFilter: 'blur(6px)' }}
-            />
-          </Box>
-
-          <InfoRow icon={<BadgeIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Employee / Faculty ID" value={`${professorDetails?professorDetails.admin_employement.employee_id:''}`} />
-          <InfoRow icon={<DeptIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Department" value={professorDetails?professorDetails.experience.department:''} />
-          <InfoRow icon={<StarIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Designation" value={professorDetails?professorDetails.experience.designation:''} />
-          <InfoRow icon={<ExpIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Experience" value={professorDetails?professorDetails.experience.teaching_experience:''} />
-          <InfoRow icon={<PhoneIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Phone" value={professorDetails?professorDetails.phone_number:''} />
-          <InfoRow icon={<EmailIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Email" value={professorDetails?professorDetails.email:''} />
-          <InfoRow icon={<LocationIcon sx={{ fontSize: 16, color: '#667eea' }} />} label="Address" value={professorDetails?professorDetails.address.current_address:''} />
-
-          {/* Subjects */}
-          <Box sx={{ mt: 2, mb: 2 }}>
-            <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.8px', mb: 1 }}>
-              Subjects Handled
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.7 }}>
-              {professorData.subjects.map((s) => (
-                <Chip key={s} label={s} size="small" sx={{ background: 'rgba(255,255,255,.12)', color: '#fff', fontSize: '0.72rem', fontWeight: 500, backdropFilter: 'blur(4px)', '&:hover': { background: 'rgba(255,255,255,.22)' } }} />
-              ))}
-            </Box>
-          </Box>
-        </Box>
-
-        <Typography sx={{ textAlign: 'center', color: 'rgba(255,255,255,.35)', fontSize: '0.7rem', py: 1.5, zIndex: 1 }}>
-          EduConnect • Faculty Portal
-        </Typography>
+      {/* Desktop Sidebar */}
+      <Box sx={{ width: '20%', minWidth: 280, maxWidth: 340, height: '100vh', position: 'sticky', top: 0, display: { xs: 'none', md: 'flex' }, flexDirection: 'column', overflow: 'hidden', flexShrink: 0 }}>
+        <ProfSidebarInner professorDetails={professorDetails} navigate={navigate} onClose={() => {}} />
       </Box>
 
-      {/* ────── RIGHT PANEL (80%) ────── */}
-      <Box sx={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Right Panel */}
+      <Box sx={{ flex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Top Bar */}
-        <Box
-          sx={{
-            px: 4, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            background: '#fff', borderBottom: '1px solid rgba(0,0,0,.06)', boxShadow: '0 2px 12px rgba(0,0,0,.03)',
-          }}
-        >
-          <Box>
-            <Typography sx={{ fontWeight: 800, fontSize: '1.35rem', background: g.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              {professorDetails?professorDetails.name:''}
-            </Typography>
-            <Typography sx={{ color: '#888', fontSize: '0.85rem' }}>
-              {professorDetails?professorDetails.experience.department:''} — {professorDetails?professorDetails.experience.designation:''}
-            </Typography>
+        <Box sx={{ px: { xs: 2, md: 4 }, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', borderBottom: '1px solid rgba(0,0,0,.06)', boxShadow: '0 2px 12px rgba(0,0,0,.03)' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton onClick={() => setMobileOpen(true)} sx={{ display: { xs: 'flex', md: 'none' }, color: '#667eea', mr: 1 }}>
+              <MenuIcon />
+            </IconButton>
+            <Box>
+              <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.35rem' }, background: g.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                {professorDetails ? professorDetails.name : ''}
+              </Typography>
+              <Typography sx={{ color: '#888', fontSize: '0.85rem', display: { xs: 'none', sm: 'block' } }}>
+                {professorDetails ? professorDetails.experience.department : ''} — {professorDetails ? professorDetails.experience.designation : ''}
+              </Typography>
+            </Box>
           </Box>
           <Button
             variant="contained" startIcon={<MoreIcon />}
@@ -547,11 +528,13 @@ const ProfessorPage = () => {
         </Box>
 
         {/* Tabs */}
-        <Box sx={{ px: 4, pt: 2, background: '#fff' }}>
+        <Box sx={{ px: { xs: 1, md: 4 }, pt: 2, background: '#fff' }}>
           <Tabs
             value={tabIdx} onChange={(_, v) => setTabIdx(v)}
+            variant="scrollable"
+            scrollButtons="auto"
             sx={{
-              '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: '0.95rem', minHeight: 48, color: '#888', '&.Mui-selected': { color: '#667eea' } },
+              '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: { xs: '0.82rem', md: '0.95rem' }, minHeight: 48, color: '#888', '&.Mui-selected': { color: '#667eea' } },
               '& .MuiTabs-indicator': { background: g.primary, height: 3, borderRadius: '3px 3px 0 0' },
             }}
           >
@@ -563,7 +546,7 @@ const ProfessorPage = () => {
         </Box>
 
         {/* Tab Content */}
-        <Box sx={{ flex: 1, overflow: 'auto', px: 4, py: 3 }}>
+        <Box sx={{ flex: 1, overflow: 'auto', px: { xs: 1.5, md: 4 }, py: 3 }}>
           {/* ── Take Attendance ── */}
           {tabIdx === 0 && (
             <Box>
@@ -583,7 +566,7 @@ const ProfessorPage = () => {
 
               {/* Filters */}
               <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
-                <FormControl sx={{ minWidth: 250 }}>
+                <FormControl sx={{ minWidth: { xs: '100%', md: 250 } }}>
                   <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Select Class</InputLabel>
                   <Select
                     value={attClass} label="Select Class" onChange={(e) => setAttClass(e.target.value)}
@@ -592,7 +575,7 @@ const ProfessorPage = () => {
                     {classOptions.map((c) => <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>)}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ minWidth: 220 }}>
+                <FormControl sx={{ minWidth: { xs: '100%', md: 220 } }}>
                   <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Select Branch</InputLabel>
                   <Select
                     value={attBranch} label="Select Branch" onChange={(e) => setAttBranch(e.target.value)}
@@ -601,7 +584,7 @@ const ProfessorPage = () => {
                     {branchOptions.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
                   </Select>
                 </FormControl>
-                <FormControl sx={{ minWidth: 200 }}>
+                <FormControl sx={{ minWidth: { xs: '100%', md: 200 } }}>
                   <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Select Semester</InputLabel>
                   <Select
                     value={attSemester} label="Select Semester" onChange={(e) => setAttSemester(e.target.value)}
@@ -615,6 +598,7 @@ const ProfessorPage = () => {
                   startIcon={<SaveIcon />}
                   onClick={handleSaveSettings}
                   disabled={!attClass || !attBranch || !attSemester}
+                  fullWidth
                   sx={{
                     background: settingsSaved ? 'linear-gradient(135deg,#43e97b,#38f9d7)' : g.primary,
                     borderRadius: '14px', textTransform: 'none', fontWeight: 600, px: 3, py: 1.7,

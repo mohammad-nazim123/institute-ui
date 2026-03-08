@@ -18,7 +18,10 @@ import {
   Avatar,
   Divider,
   Tooltip,
+  Drawer,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import {
   School as SchoolIcon,
   Person as StudentIcon,
@@ -34,6 +37,7 @@ import {
   ArrowBack as BackIcon,
   MenuBook as SyllabusIcon,
   Logout as LogoutIcon,
+  Menu as MenuIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { clearSession } from '../utils/storage';
@@ -56,10 +60,14 @@ const AdminPage = () => {
     document.title = 'EduConnect | Admin';
   }, []);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const navigate = useNavigate();
   const [studentOpen, setStudentOpen] = useState(true);
   const [professorOpen, setProfessorOpen] = useState(true);
   const [activePanel, setActivePanel] = useState('student-details');
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // User dropdown state
   const [anchorEl, setAnchorEl] = useState(null);
@@ -106,239 +114,166 @@ const AdminPage = () => {
     }
   };
 
+  // Sidebar content extracted so it can be used in both Drawer and permanent panel
+  const SidebarContent = (
+    <Box
+      sx={{
+        width: { xs: 260, md: '100%' },
+        height: '100%',
+        background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
+      }}
+    >
+      {/* Header */}
+      <Box sx={{ p: 3, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Box
+            sx={{
+              width: 45, height: 45, borderRadius: '12px',
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <SchoolIcon sx={{ color: '#fff', fontSize: 24 }} />
+          </Box>
+          <Box>
+            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>Admin Panel</Typography>
+            <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>Manage Institute</Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Navigation Menu */}
+      <List component="nav" sx={{ flex: 1, py: 2, px: 1 }}>
+        {/* Student Section */}
+        <ListItemButton
+          onClick={() => setStudentOpen(!studentOpen)}
+          sx={{ borderRadius: '12px', mb: 0.5, '&:hover': { background: 'rgba(255,255,255,0.05)' } }}
+        >
+          <ListItemIcon>
+            <Box sx={{ width: 36, height: 36, borderRadius: '10px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <StudentIcon sx={{ color: '#fff', fontSize: 20 }} />
+            </Box>
+          </ListItemIcon>
+          <ListItemText primary="Students" sx={{ '& .MuiTypography-root': { color: '#fff', fontWeight: 600 } }} />
+          {studentOpen ? <ExpandLess sx={{ color: 'rgba(255,255,255,0.7)' }} /> : <ExpandMore sx={{ color: 'rgba(255,255,255,0.7)' }} />}
+        </ListItemButton>
+        <Collapse in={studentOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {menuItems.student.map((item) => (
+              <ListItemButton
+                key={item.id}
+                onClick={() => { setActivePanel(item.id); setMobileOpen(false); }}
+                sx={{ pl: 4, py: 1.5, ml: 2, borderRadius: '10px', borderLeft: activePanel === item.id ? '3px solid #667eea' : '3px solid transparent', background: activePanel === item.id ? 'rgba(102, 126, 234, 0.15)' : 'transparent', '&:hover': { background: 'rgba(255,255,255,0.05)' } }}
+              >
+                <ListItemIcon sx={{ minWidth: 36 }}>
+                  <Box sx={{ color: activePanel === item.id ? '#667eea' : 'rgba(255,255,255,0.5)' }}>{item.icon}</Box>
+                </ListItemIcon>
+                <ListItemText primary={item.label} sx={{ '& .MuiTypography-root': { color: activePanel === item.id ? '#fff' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', fontWeight: activePanel === item.id ? 600 : 400 } }} />
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
+
+        {/* Professor Section */}
+        <ListItemButton
+          onClick={() => setProfessorOpen(!professorOpen)}
+          sx={{ borderRadius: '12px', mt: 1, mb: 0.5, '&:hover': { background: 'rgba(255,255,255,0.05)' } }}
+        >
+          <ListItemIcon>
+            <Box sx={{ width: 36, height: 36, borderRadius: '10px', background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ProfessorIcon sx={{ color: '#fff', fontSize: 20 }} />
+            </Box>
+          </ListItemIcon>
+          <ListItemText primary="Professors" sx={{ '& .MuiTypography-root': { color: '#fff', fontWeight: 600 } }} />
+          {professorOpen ? <ExpandLess sx={{ color: 'rgba(255,255,255,0.7)' }} /> : <ExpandMore sx={{ color: 'rgba(255,255,255,0.7)' }} />}
+        </ListItemButton>
+        <Collapse in={professorOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {menuItems.professor.map((item) => (
+              <ListItemButton
+                key={item.id}
+                onClick={() => { setActivePanel(item.id); setMobileOpen(false); }}
+                sx={{ pl: 4, py: 1.5, ml: 2, borderRadius: '10px', borderLeft: activePanel === item.id ? '3px solid #f5576c' : '3px solid transparent', background: activePanel === item.id ? 'rgba(245, 87, 108, 0.15)' : 'transparent', '&:hover': { background: 'rgba(255,255,255,0.05)' } }}
+              >
+                <ListItemIcon sx={{ minWidth: 36 }}>
+                  <Box sx={{ color: activePanel === item.id ? '#f5576c' : 'rgba(255,255,255,0.5)' }}>{item.icon}</Box>
+                </ListItemIcon>
+                <ListItemText primary={item.label} sx={{ '& .MuiTypography-root': { color: activePanel === item.id ? '#fff' : 'rgba(255,255,255,0.7)', fontSize: '0.9rem', fontWeight: activePanel === item.id ? 600 : 400 } }} />
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
+      </List>
+
+      {/* Footer */}
+      <Box sx={{ p: 3, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <Typography sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', textAlign: 'center' }}>
+          © 2026 EduConnect Admin
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   return (
     <Box
       sx={{
         display: 'flex',
         width: '100%',
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: '100vh',
         background: 'linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%)',
       }}
     >
-      {/* Left Sidebar - 25% */}
+      {/* Mobile Drawer */}
+      <Drawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: 'block', md: 'none' }, '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 260, border: 'none' } }}
+      >
+        {SidebarContent}
+      </Drawer>
+
+      {/* Desktop Sidebar */}
       <Box
         sx={{
-          width: { xs: '45%', md: '30%', lg: '20%', xl: '16%' },
-          // minWidth: { md: '280px' },
-          // maxWidth: { md: '320px' },
-          height: '100%',
-          background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '4px 0 20px rgba(0,0,0,0.1)',
+          width: { md: '30%', lg: '20%', xl: '16%' },
+          height: '100vh',
+          position: 'sticky',
+          top: 0,
+          display: { xs: 'none', md: 'block' },
+          flexShrink: 0,
         }}
       >
-        {/* Header */}
-        <Box sx={{ p: 3, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            {/* <IconButton 
-              onClick={() => navigate('/dashboard')}
-              sx={{ 
-                color: 'rgba(255,255,255,0.7)',
-                '&:hover': { color: '#fff', background: 'rgba(255,255,255,0.1)' }
-              }}
-            >
-              <BackIcon />
-            </IconButton> */}
-            <Box
-              sx={{
-                width: 45,
-                height: 45,
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <SchoolIcon sx={{ color: '#fff', fontSize: 24 }} />
-            </Box>
-            <Box>
-              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>
-                Admin Panel
-              </Typography>
-              <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>
-                Manage Institute
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Navigation Menu */}
-        <List component="nav" sx={{ flex: 1, py: 2, px: 1 }}>
-          {/* Student Section */}
-          <ListItemButton
-            onClick={() => setStudentOpen(!studentOpen)}
-            sx={{
-              borderRadius: '12px',
-              mb: 0.5,
-              '&:hover': { background: 'rgba(255,255,255,0.05)' },
-            }}
-          >
-            <ListItemIcon>
-              <Box
-                sx={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <StudentIcon sx={{ color: '#fff', fontSize: 20 }} />
-              </Box>
-            </ListItemIcon>
-            <ListItemText
-              primary="Students"
-              sx={{
-                '& .MuiTypography-root': {
-                  color: '#fff',
-                  fontWeight: 600,
-                },
-              }}
-            />
-            {studentOpen ? (
-              <ExpandLess sx={{ color: 'rgba(255,255,255,0.7)' }} />
-            ) : (
-              <ExpandMore sx={{ color: 'rgba(255,255,255,0.7)' }} />
-            )}
-          </ListItemButton>
-          <Collapse in={studentOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItems.student.map((item) => (
-                <ListItemButton
-                  key={item.id}
-                  onClick={() => setActivePanel(item.id)}
-                  sx={{
-                    pl: 4,
-                    py: 1.5,
-                    ml: 2,
-                    borderRadius: '10px',
-                    borderLeft: activePanel === item.id ? '3px solid #667eea' : '3px solid transparent',
-                    background: activePanel === item.id ? 'rgba(102, 126, 234, 0.15)' : 'transparent',
-                    '&:hover': { background: 'rgba(255,255,255,0.05)' },
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 36 }}>
-                    <Box sx={{ color: activePanel === item.id ? '#667eea' : 'rgba(255,255,255,0.5)' }}>
-                      {item.icon}
-                    </Box>
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    sx={{
-                      '& .MuiTypography-root': {
-                        color: activePanel === item.id ? '#fff' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.9rem',
-                        fontWeight: activePanel === item.id ? 600 : 400,
-                      },
-                    }}
-                  />
-                </ListItemButton>
-              ))}
-            </List>
-          </Collapse>
-
-          {/* Professor Section */}
-          <ListItemButton
-            onClick={() => setProfessorOpen(!professorOpen)}
-            sx={{
-              borderRadius: '12px',
-              mt: 1,
-              mb: 0.5,
-              '&:hover': { background: 'rgba(255,255,255,0.05)' },
-            }}
-          >
-            <ListItemIcon>
-              <Box
-                sx={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <ProfessorIcon sx={{ color: '#fff', fontSize: 20 }} />
-              </Box>
-            </ListItemIcon>
-            <ListItemText
-              primary="Professors"
-              sx={{
-                '& .MuiTypography-root': {
-                  color: '#fff',
-                  fontWeight: 600,
-                },
-              }}
-            />
-            {professorOpen ? (
-              <ExpandLess sx={{ color: 'rgba(255,255,255,0.7)' }} />
-            ) : (
-              <ExpandMore sx={{ color: 'rgba(255,255,255,0.7)' }} />
-            )}
-          </ListItemButton>
-          <Collapse in={professorOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {menuItems.professor.map((item) => (
-                <ListItemButton
-                  key={item.id}
-                  onClick={() => setActivePanel(item.id)}
-                  sx={{
-                    pl: 4,
-                    py: 1.5,
-                    ml: 2,
-                    borderRadius: '10px',
-                    borderLeft: activePanel === item.id ? '3px solid #f5576c' : '3px solid transparent',
-                    background: activePanel === item.id ? 'rgba(245, 87, 108, 0.15)' : 'transparent',
-                    '&:hover': { background: 'rgba(255,255,255,0.05)' },
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: 36 }}>
-                    <Box sx={{ color: activePanel === item.id ? '#f5576c' : 'rgba(255,255,255,0.5)' }}>
-                      {item.icon}
-                    </Box>
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    sx={{
-                      '& .MuiTypography-root': {
-                        color: activePanel === item.id ? '#fff' : 'rgba(255,255,255,0.7)',
-                        fontSize: '0.9rem',
-                        fontWeight: activePanel === item.id ? 600 : 400,
-                      },
-                    }}
-                  />
-                </ListItemButton>
-              ))}
-            </List>
-          </Collapse>
-        </List>
-
-        {/* Footer */}
-        <Box sx={{ p: 3, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <Typography sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', textAlign: 'center' }}>
-            © 2026 EduConnect Admin
-          </Typography>
-        </Box>
+        {SidebarContent}
       </Box>
 
-      {/* Right Content Panel - 75% */}
+
+
       <Box
         sx={{
           flex: 1,
-          height: '100%',
+          minHeight: '100vh',
           overflow: 'auto',
           p: { xs: 2, md: 4 },
           position: 'relative',
         }}
       >
+        {/* Top bar: hamburger (mobile) + user avatar */}
+        <Box sx={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 2, md: 0 } }}>
+          {/* Hamburger — mobile only */}
+          <IconButton
+            onClick={() => setMobileOpen(true)}
+            sx={{ display: { xs: 'flex', md: 'none' }, color: '#667eea', background: 'rgba(102,126,234,0.08)', borderRadius: '12px' }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Box sx={{ display: { xs: 'none', md: 'block' } }} />
+        </Box>
         {/* Top-right action buttons */}
-        <Box sx={{ position: 'absolute', top: 18, right: 28, zIndex: 10, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box sx={{ position: { xs: 'fixed', md: 'absolute' }, top: { xs: 12, md: 18 }, right: { xs: 16, md: 28 }, zIndex: 11, display: 'flex', alignItems: 'center', gap: 1.5 }}>
           {/* User Avatar Dropdown */}
           <IconButton
             onClick={(e) => setAnchorEl(e.currentTarget)}
