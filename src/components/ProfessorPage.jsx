@@ -500,53 +500,57 @@ const ProfessorPage = () => {
       {/* Right Panel */}
       <Box sx={{ flex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Top Bar */}
-        <Box sx={{ px: { xs: 2, md: 4 }, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', borderBottom: '1px solid rgba(0,0,0,.06)', boxShadow: '0 2px 12px rgba(0,0,0,.03)' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton onClick={() => setMobileOpen(true)} sx={{ display: { xs: 'flex', md: 'none' }, color: '#667eea', mr: 1 }}>
+        <Box sx={{ px: { xs: 1.5, md: 4 }, py: { xs: 1.5, md: 2 }, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', borderBottom: '1px solid rgba(0,0,0,.06)', boxShadow: '0 2px 12px rgba(0,0,0,.03)' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, flex: 1 }}>
+            <IconButton onClick={() => setMobileOpen(true)} sx={{ display: { xs: 'flex', md: 'none' }, color: '#667eea', flexShrink: 0 }}>
               <MenuIcon />
             </IconButton>
-            <Box>
-              <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.1rem', md: '1.35rem' }, background: g.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography sx={{ fontWeight: 800, fontSize: { xs: '1rem', md: '1.35rem' }, background: g.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {professorDetails ? professorDetails.name : ''}
               </Typography>
-              <Typography sx={{ color: '#888', fontSize: '0.85rem', display: { xs: 'none', sm: 'block' } }}>
+              <Typography sx={{ color: '#888', fontSize: '0.82rem', display: { xs: 'none', sm: 'block' }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {professorDetails ? professorDetails.experience.department : ''} — {professorDetails ? professorDetails.experience.designation : ''}
               </Typography>
             </Box>
           </Box>
           <Button
-            variant="contained" startIcon={<MoreIcon />}
+            variant="contained"
+            startIcon={<MoreIcon />}
             onClick={() => setMoreOpen(true)}
             sx={{
-              background: g.primary, borderRadius: '14px', textTransform: 'none', fontWeight: 600, px: 3,
+              background: g.primary, borderRadius: '14px', textTransform: 'none', fontWeight: 600,
+              px: { xs: 1.5, md: 3 }, minWidth: { xs: 40, md: 'auto' }, flexShrink: 0, ml: 1,
               boxShadow: '0 4px 18px rgba(102,126,234,.35)',
               '&:hover': { boxShadow: '0 6px 24px rgba(102,126,234,.5)' },
+              '& .MuiButton-startIcon': { mr: { xs: 0, md: 1 } },
             }}
           >
-            More
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>More</Box>
           </Button>
         </Box>
 
         {/* Tabs */}
-        <Box sx={{ px: { xs: 1, md: 4 }, pt: 2, background: '#fff' }}>
+        <Box sx={{ px: { xs: 0, md: 4 }, pt: 1.5, background: '#fff' }}>
           <Tabs
             value={tabIdx} onChange={(_, v) => setTabIdx(v)}
             variant="scrollable"
             scrollButtons="auto"
             sx={{
-              '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: { xs: '0.82rem', md: '0.95rem' }, minHeight: 48, color: '#888', '&.Mui-selected': { color: '#667eea' } },
+              '& .MuiTab-root': { textTransform: 'none', fontWeight: 600, fontSize: { xs: '0.78rem', md: '0.95rem' }, minHeight: { xs: 42, md: 48 }, color: '#888', px: { xs: 1.5, md: 2 }, '&.Mui-selected': { color: '#667eea' } },
               '& .MuiTabs-indicator': { background: g.primary, height: 3, borderRadius: '3px 3px 0 0' },
+              '& .MuiTab-iconWrapper': { display: { xs: 'none', sm: 'flex' } },
             }}
           >
-            <Tab icon={<AttendanceIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Take Attendance" />
+            <Tab icon={<AttendanceIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Attendance" />
             <Tab icon={<CalendarIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Schedule" />
-            <Tab icon={<ExamDutyIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Exam Duties" />
+            <Tab icon={<ExamDutyIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Exams" />
             <Tab icon={<HolidayIcon sx={{ fontSize: 20 }} />} iconPosition="start" label="Calendar" />
           </Tabs>
         </Box>
 
         {/* Tab Content */}
-        <Box sx={{ flex: 1, overflow: 'auto', px: { xs: 1.5, md: 4 }, py: 3 }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', px: { xs: 1.5, md: 4 }, py: { xs: 2, md: 3 } }}>
           {/* ── Take Attendance ── */}
           {tabIdx === 0 && (
             <Box>
@@ -565,65 +569,70 @@ const ProfessorPage = () => {
               </Box> */}
 
               {/* Filters */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap', alignItems: 'center' }}>
-                <FormControl sx={{ minWidth: { xs: '100%', md: 250 } }}>
-                  <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Select Class</InputLabel>
-                  <Select
-                    value={attClass} label="Select Class" onChange={(e) => setAttClass(e.target.value)}
-                    sx={{ borderRadius: '14px', background: '#fff', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#ddd' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' } }}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5 }}>
+                  <FormControl sx={{ flex: 1, minWidth: 0 }}>
+                    <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Class</InputLabel>
+                    <Select
+                      value={attClass} label="Class" onChange={(e) => setAttClass(e.target.value)}
+                      sx={{ borderRadius: '14px', background: '#fff', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#ddd' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' } }}
+                    >
+                      {classOptions.map((c) => <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                  <FormControl sx={{ flex: 1, minWidth: 0 }}>
+                    <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Branch</InputLabel>
+                    <Select
+                      value={attBranch} label="Branch" onChange={(e) => setAttBranch(e.target.value)}
+                      sx={{ borderRadius: '14px', background: '#fff', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#ddd' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' } }}
+                    >
+                      {branchOptions.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5 }}>
+                  <FormControl sx={{ flex: 1, minWidth: 0 }}>
+                    <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Semester</InputLabel>
+                    <Select
+                      value={attSemester} label="Semester" onChange={(e) => setAttSemester(e.target.value)}
+                      sx={{ borderRadius: '14px', background: '#fff', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#ddd' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' } }}
+                    >
+                      {semesterOptions.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    startIcon={<SaveIcon />}
+                    onClick={handleSaveSettings}
+                    disabled={!attClass || !attBranch || !attSemester}
+                    sx={{
+                      background: settingsSaved ? 'linear-gradient(135deg,#43e97b,#38f9d7)' : g.primary,
+                      borderRadius: '14px', textTransform: 'none', fontWeight: 600,
+                      px: { xs: 3, md: 4 }, py: { xs: 1.5, md: 1.7 },
+                      flex: { xs: 1, sm: 'none' }, minWidth: { sm: 160 },
+                      boxShadow: '0 4px 14px rgba(102,126,234,.3)',
+                      transition: 'background .4s',
+                      '&:hover': { boxShadow: '0 6px 20px rgba(102,126,234,.5)' },
+                    }}
                   >
-                    {classOptions.map((c) => <MenuItem key={c.value} value={c.value}>{c.label}</MenuItem>)}
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ minWidth: { xs: '100%', md: 220 } }}>
-                  <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Select Branch</InputLabel>
-                  <Select
-                    value={attBranch} label="Select Branch" onChange={(e) => setAttBranch(e.target.value)}
-                    sx={{ borderRadius: '14px', background: '#fff', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#ddd' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' } }}
-                  >
-                    {branchOptions.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-                  </Select>
-                </FormControl>
-                <FormControl sx={{ minWidth: { xs: '100%', md: 200 } }}>
-                  <InputLabel sx={{ '&.Mui-focused': { color: '#667eea' } }}>Select Semester</InputLabel>
-                  <Select
-                    value={attSemester} label="Select Semester" onChange={(e) => setAttSemester(e.target.value)}
-                    sx={{ borderRadius: '14px', background: '#fff', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#ddd' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' }, '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#667eea' } }}
-                  >
-                    {semesterOptions.map((s) => <MenuItem key={s} value={s}>{s}</MenuItem>)}
-                  </Select>
-                </FormControl>
-                <Button
-                  variant="contained"
-                  startIcon={<SaveIcon />}
-                  onClick={handleSaveSettings}
-                  disabled={!attClass || !attBranch || !attSemester}
-                  fullWidth
-                  sx={{
-                    background: settingsSaved ? 'linear-gradient(135deg,#43e97b,#38f9d7)' : g.primary,
-                    borderRadius: '14px', textTransform: 'none', fontWeight: 600, px: 3, py: 1.7,
-                    boxShadow: '0 4px 14px rgba(102,126,234,.3)',
-                    transition: 'background .4s',
-                    '&:hover': { boxShadow: '0 6px 20px rgba(102,126,234,.5)' },
-                  }}
-                >
-                  {settingsSaved ? 'Saved ✓' : 'Save Settings'}
-                </Button>
+                    {settingsSaved ? 'Saved ✓' : 'Save Settings'}
+                  </Button>
+                </Box>
               </Box>
 
               {/* Attendance date banner */}
               <Box sx={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                mb: 3, p: 1.6, borderRadius: '14px',
+                mb: 2.5, p: { xs: 1.2, md: 1.6 }, borderRadius: '14px',
                 background: attendanceDate === todayStr ? g.primary : g.amber,
-                color: '#fff',
+                color: '#fff', flexWrap: 'wrap', gap: 1,
               }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CalendarIcon sx={{ fontSize: 22 }} />
-                  <Box>
-                    <Typography sx={{ fontSize: '0.68rem', opacity: .8, textTransform: 'uppercase', letterSpacing: '.6px' }}>Attendance For</Typography>
-                    <Typography sx={{ fontWeight: 800, fontSize: '1rem' }}>
-                      {new Date(attendanceDate + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+                  <CalendarIcon sx={{ fontSize: { xs: 18, md: 22 }, flexShrink: 0 }} />
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography sx={{ fontSize: { xs: '0.6rem', md: '0.68rem' }, opacity: .8, textTransform: 'uppercase', letterSpacing: '.6px' }}>Attendance For</Typography>
+                    <Typography sx={{ fontWeight: 800, fontSize: { xs: '0.8rem', md: '1rem' }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {new Date(attendanceDate + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
                     </Typography>
                   </Box>
                 </Box>
@@ -631,25 +640,25 @@ const ProfessorPage = () => {
                   <Button
                     size="small"
                     onClick={() => setAttendanceDate(todayStr)}
-                    sx={{ color: '#fff', background: 'rgba(255,255,255,.2)', borderRadius: '10px', textTransform: 'none', fontWeight: 700, fontSize: '0.72rem', px: 1.5, '&:hover': { background: 'rgba(255,255,255,.35)' } }}
+                    sx={{ color: '#fff', background: 'rgba(255,255,255,.2)', borderRadius: '10px', textTransform: 'none', fontWeight: 700, fontSize: '0.7rem', px: 1.5, flexShrink: 0, '&:hover': { background: 'rgba(255,255,255,.35)' } }}
                   >
                     Reset to Today
                   </Button>
                 )}
               </Box>
 
-              {/* Student list — card style */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {/* Header row */}
+              {/* Student list */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1, md: 1.5 } }}>
+                {/* Header row — tablet+ only */}
                 <Box sx={{
-                  display: 'flex', alignItems: 'center', px: 2.5, py: 1.5,
+                  display: { xs: 'none', sm: 'flex' }, alignItems: 'center', px: 2, py: 1.2,
                   borderRadius: '14px', background: g.primary,
                   boxShadow: '0 4px 18px rgba(102,126,234,.25)',
                 }}>
-                  <Typography sx={{ width: 40, color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.78rem' }}>#</Typography>
-                  <Typography sx={{ width: 70, color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.78rem' }}>Roll</Typography>
-                  <Typography sx={{ flex: 1, color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.78rem' }}>Student</Typography>
-                  <Typography sx={{ width: 200, textAlign: 'center', color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.78rem' }}>Mark Attendance</Typography>
+                  <Typography sx={{ width: 36, flexShrink: 0, color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.75rem' }}>#</Typography>
+                  <Typography sx={{ width: 72, flexShrink: 0, color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.75rem' }}>Roll</Typography>
+                  <Typography sx={{ flex: 1, minWidth: 0, color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.75rem' }}>Student</Typography>
+                  <Typography sx={{ width: 200, flexShrink: 0, textAlign: 'center', color: 'rgba(255,255,255,.8)', fontWeight: 700, fontSize: '0.75rem' }}>Attendance</Typography>
                 </Box>
 
                 {/* Student cards */}
@@ -658,14 +667,14 @@ const ProfessorPage = () => {
                     key={s.id}
                     elevation={0}
                     sx={{
-                      display: 'flex', alignItems: 'center', px: 2.5, py: 1.8,
-                      borderRadius: '16px',
+                      borderRadius: { xs: '14px', md: '16px' },
                       border: `2px solid ${s.present ? 'rgba(67,233,123,.35)' : 'rgba(0,0,0,.06)'}`,
                       background: s.present
                         ? 'linear-gradient(135deg, rgba(67,233,123,.06) 0%, rgba(56,249,215,.04) 100%)'
                         : '#fff',
                       transition: 'all .35s cubic-bezier(.4,0,.2,1)',
                       animation: `fadeInUp .35s ease ${i * 0.04}s both`,
+                      overflow: 'hidden',
                       '&:hover': {
                         transform: 'translateY(-2px)',
                         boxShadow: s.present
@@ -674,97 +683,70 @@ const ProfessorPage = () => {
                       },
                     }}
                   >
-                    {/* # */}
-                    <Typography sx={{ width: 40, fontWeight: 600, color: '#aaa', fontSize: '0.85rem' }}>{i + 1}</Typography>
+                    {/* ── Desktop: horizontal row ── */}
+                    <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', px: 2, py: 1.6 }}>
+                      <Typography sx={{ width: 36, flexShrink: 0, fontWeight: 600, color: '#aaa', fontSize: '0.82rem' }}>{i + 1}</Typography>
+                      <Typography sx={{ width: 72, flexShrink: 0, fontWeight: 700, color: '#1a1a2e', fontSize: '0.82rem', fontFamily: 'monospace' }}>{s.admission_details.roll_number}</Typography>
+                      <Typography sx={{ flex: 1, minWidth: 0, fontWeight: 600, color: '#333', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</Typography>
+                      <Box sx={{ width: 200, flexShrink: 0, display: 'flex', gap: 1, justifyContent: 'center' }}>
+                        <Button size="small" onClick={() => toggleStudent(s.id)} startIcon={<PaidIcon sx={{ fontSize: '16px !important' }} />}
+                          sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700, fontSize: '0.78rem', px: 2, py: 0.8, minWidth: 90, background: s.present ? g.green : 'transparent', color: s.present ? '#fff' : '#aaa', border: s.present ? 'none' : '2px solid #e0e0e0', boxShadow: s.present ? '0 4px 14px rgba(67,233,123,.35)' : 'none', transition: 'all .3s cubic-bezier(.4,0,.2,1)', '&:hover': { background: s.present ? g.green : 'rgba(67,233,123,.08)', borderColor: s.present ? 'transparent' : '#43e97b', color: s.present ? '#fff' : '#43e97b', transform: 'scale(1.04)' } }}>
+                          Present
+                        </Button>
+                        <Button size="small" onClick={() => toggleStudent(s.id)} startIcon={<PendingIcon sx={{ fontSize: '16px !important' }} />}
+                          sx={{ borderRadius: '12px', textTransform: 'none', fontWeight: 700, fontSize: '0.78rem', px: 2, py: 0.8, minWidth: 90, background: !s.present ? g.warm : 'transparent', color: !s.present ? '#fff' : '#aaa', border: !s.present ? 'none' : '2px solid #e0e0e0', boxShadow: !s.present ? '0 4px 14px rgba(245,87,108,.3)' : 'none', transition: 'all .3s cubic-bezier(.4,0,.2,1)', '&:hover': { background: !s.present ? g.warm : 'rgba(245,87,108,.08)', borderColor: !s.present ? 'transparent' : '#f5576c', color: !s.present ? '#fff' : '#f5576c', transform: 'scale(1.04)' } }}>
+                          Absent
+                        </Button>
+                      </Box>
+                    </Box>
 
-                    {/* Avatar */}
-                    {/* <Avatar
-                      sx={{
-                        width: 38, height: 38, mr: 1.5,
-                        fontSize: '0.85rem', fontWeight: 700,
-                        background: s.present ? g.green : 'linear-gradient(135deg,#e0e0e0,#bdbdbd)',
-                        color: s.present ? '#fff' : '#666',
-                        transition: 'all .35s ease',
-                        boxShadow: s.present ? '0 4px 14px rgba(67,233,123,.3)' : 'none',
-                      }}
-                    >
-                      {s.name ? s.name.charAt(0).toUpperCase() : '?'}
-                    </Avatar> */}
-
-                    {/* Roll */}
-                    <Typography sx={{ width: 70, fontWeight: 700, color: '#1a1a2e', fontSize: '0.85rem', fontFamily: 'monospace' }}>{s.admission_details.roll_number}</Typography>
-
-                    {/* Name */}
-                    <Typography sx={{ flex: 1, fontWeight: 600, color: '#333', fontSize: '0.92rem' }}>{s.name}</Typography>
-
-                    {/* Present / Absent buttons */}
-                    <Box sx={{ width: 200, display: 'flex', gap: 1, justifyContent: 'center' }}>
-                      <Button
-                        size="small"
-                        onClick={() => toggleStudent(s.id)}
-                        startIcon={<PaidIcon sx={{ fontSize: '16px !important' }} />}
-                        sx={{
-                          borderRadius: '12px', textTransform: 'none', fontWeight: 700, fontSize: '0.78rem',
-                          px: 2, py: 0.8, minWidth: 90,
-                          background: s.present ? g.green : 'transparent',
-                          color: s.present ? '#fff' : '#aaa',
-                          border: s.present ? 'none' : '2px solid #e0e0e0',
-                          boxShadow: s.present ? '0 4px 14px rgba(67,233,123,.35)' : 'none',
-                          transition: 'all .3s cubic-bezier(.4,0,.2,1)',
-                          '&:hover': {
-                            background: s.present ? g.green : 'rgba(67,233,123,.08)',
-                            borderColor: s.present ? 'transparent' : '#43e97b',
-                            color: s.present ? '#fff' : '#43e97b',
-                            transform: 'scale(1.04)',
-                          },
-                        }}
-                      >
-                        Present
-                      </Button>
-                      <Button
-                        size="small"
-                        onClick={() => toggleStudent(s.id)}
-                        startIcon={<PendingIcon sx={{ fontSize: '16px !important' }} />}
-                        sx={{
-                          borderRadius: '12px', textTransform: 'none', fontWeight: 700, fontSize: '0.78rem',
-                          px: 2, py: 0.8, minWidth: 90,
-                          background: !s.present ? g.warm : 'transparent',
-                          color: !s.present ? '#fff' : '#aaa',
-                          border: !s.present ? 'none' : '2px solid #e0e0e0',
-                          boxShadow: !s.present ? '0 4px 14px rgba(245,87,108,.3)' : 'none',
-                          transition: 'all .3s cubic-bezier(.4,0,.2,1)',
-                          '&:hover': {
-                            background: !s.present ? g.warm : 'rgba(245,87,108,.08)',
-                            borderColor: !s.present ? 'transparent' : '#f5576c',
-                            color: !s.present ? '#fff' : '#f5576c',
-                            transform: 'scale(1.04)',
-                          },
-                        }}
-                      >
-                        Absent
-                      </Button>
+                    {/* ── Mobile: stacked card ── */}
+                    <Box sx={{ display: { xs: 'flex', sm: 'none' }, flexDirection: 'column', p: 1.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <Avatar sx={{ width: 32, height: 32, fontSize: '0.8rem', fontWeight: 700, background: s.present ? g.green : 'linear-gradient(135deg,#e0e0e0,#bdbdbd)', color: s.present ? '#fff' : '#666', transition: 'all .3s', flexShrink: 0 }}>
+                          {s.name ? s.name.charAt(0).toUpperCase() : '?'}
+                        </Avatar>
+                        <Box sx={{ minWidth: 0, flex: 1 }}>
+                          <Typography sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: '0.85rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</Typography>
+                          <Typography sx={{ fontSize: '0.7rem', color: '#888', fontFamily: 'monospace' }}>Roll: {s.admission_details.roll_number}</Typography>
+                        </Box>
+                        <Chip label={s.present ? 'P' : 'A'} size="small" sx={{ fontWeight: 800, fontSize: '0.7rem', minWidth: 28, background: s.present ? 'rgba(67,233,123,.15)' : 'rgba(245,87,108,.12)', color: s.present ? '#27ae60' : '#f5576c' }} />
+                      </Box>
+                      <Box sx={{ display: 'flex', gap: 0.8 }}>
+                        <Button fullWidth size="small" onClick={() => toggleStudent(s.id)}
+                          sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 700, fontSize: '0.75rem', py: 0.8, background: s.present ? g.green : 'transparent', color: s.present ? '#fff' : '#bbb', border: s.present ? 'none' : '2px solid #e0e0e0', boxShadow: s.present ? '0 3px 12px rgba(67,233,123,.3)' : 'none', transition: 'all .25s' }}>
+                          ✓ Present
+                        </Button>
+                        <Button fullWidth size="small" onClick={() => toggleStudent(s.id)}
+                          sx={{ borderRadius: '10px', textTransform: 'none', fontWeight: 700, fontSize: '0.75rem', py: 0.8, background: !s.present ? g.warm : 'transparent', color: !s.present ? '#fff' : '#bbb', border: !s.present ? 'none' : '2px solid #e0e0e0', boxShadow: !s.present ? '0 3px 12px rgba(245,87,108,.25)' : 'none', transition: 'all .25s' }}>
+                          ✗ Absent
+                        </Button>
+                      </Box>
                     </Box>
                   </Paper>
                 ))}
               </Box>
 
               {/* Submit */}
-              <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ mt: 2.5, display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                 <Button
                   variant="contained" startIcon={submitting ? null : <SaveIcon />}
                   onClick={handleSubmit}
                   disabled={submitting || studentsData.length === 0}
+                  fullWidth={false}
                   sx={{
-                    background: g.primary, borderRadius: '14px', textTransform: 'none', fontWeight: 600, px: 4, py: 1.5,
+                    background: g.primary, borderRadius: '14px', textTransform: 'none', fontWeight: 600,
+                    px: { xs: 2.5, md: 4 }, py: { xs: 1.2, md: 1.5 },
+                    fontSize: { xs: '0.82rem', md: '0.9rem' },
                     boxShadow: '0 4px 18px rgba(102,126,234,.35)',
                     '&:hover': { boxShadow: '0 6px 24px rgba(102,126,234,.5)' },
-                    minWidth: 200,
+                    minWidth: { xs: 'auto', md: 200 }, width: { xs: '100%', sm: 'auto' },
                   }}
                 >
-                  {submitting ? 'Submitting…' : `Submit Attendance (${studentsData.length} students)`}
+                  {submitting ? 'Submitting…' : `Submit (${studentsData.length})`}
                 </Button>
                 {submitted && !submitting && (
-                  <Chip icon={<PaidIcon />} label="Attendance submitted successfully!" sx={{ background: 'rgba(67,233,123,.12)', color: '#2ecc71', fontWeight: 600 }} />
+                  <Chip icon={<PaidIcon />} label="Submitted!" sx={{ background: 'rgba(67,233,123,.12)', color: '#2ecc71', fontWeight: 600 }} />
                 )}
               </Box>
             </Box>
@@ -780,7 +762,7 @@ const ProfessorPage = () => {
               return `${hr % 12 || 12}:${m} ${ampm}`;
             };
             return (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 3 } }}>
                 {weeklySchedule.length === 0 && (
                   <Box sx={{ textAlign: 'center', py: 8 }}>
                     <CalendarIcon sx={{ fontSize: 56, color: '#ddd', mb: 2 }} />
@@ -803,7 +785,7 @@ const ProfessorPage = () => {
                     <Box
                       sx={{
                         background: dayGradients[day.day] || g.primary,
-                        px: 3, py: 1.8,
+                        px: { xs: 1.5, md: 3 }, py: 1.8,
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       }}
                     >
@@ -820,66 +802,61 @@ const ProfessorPage = () => {
                       />
                     </Box>
 
-                    {/* Classes inside */}
-                    <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                      {(day.weekly_schedule_data ?? []).length === 0 && (
-                        <Typography sx={{ color: '#bbb', fontSize: '0.85rem', textAlign: 'center', py: 1 }}>No classes</Typography>
-                      )}
-                      {(day.weekly_schedule_data ?? []).map((item, i) => (
-                        <Box
-                          key={i}
-                          sx={{
-                            display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap',
-                            p: 2, borderRadius: '14px',
-                            background: 'rgba(102,126,234,.03)',
-                            border: '1px solid rgba(102,126,234,.07)',
-                            transition: 'all .25s ease',
-                            '&:hover': { background: 'rgba(102,126,234,.06)', transform: 'translateX(4px)' },
-                          }}
-                        >
-                          {/* Time */}
-                          <Box sx={{ minWidth: 140 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.2 }}>
-                              <ScheduleIcon sx={{ fontSize: 14, color: '#667eea' }} />
-                              <Typography sx={{ fontSize: '0.7rem', color: '#aaa', fontWeight: 500 }}>TIME</Typography>
+                    {/* Classes inside — horizontal scroll like PC on all screens */}
+                    <Box sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                      <Box sx={{ p: { xs: 1.5, md: 2 }, display: 'flex', flexDirection: 'column', gap: 1.5, minWidth: 480 }}>
+                        {(day.weekly_schedule_data ?? []).length === 0 && (
+                          <Typography sx={{ color: '#bbb', fontSize: '0.85rem', textAlign: 'center', py: 1 }}>No classes</Typography>
+                        )}
+                        {(day.weekly_schedule_data ?? []).map((item, i) => (
+                          <Box
+                            key={i}
+                            sx={{
+                              display: 'flex', alignItems: 'center', gap: 1.5,
+                              p: 1.2, borderRadius: '12px',
+                              background: 'rgba(102,126,234,.03)',
+                              border: '1px solid rgba(102,126,234,.07)',
+                              transition: 'all .25s ease',
+                              '&:hover': { background: 'rgba(102,126,234,.06)', transform: 'translateX(3px)' },
+                            }}
+                          >
+                            {/* Time */}
+                            <Box sx={{ minWidth: 100, flexShrink: 0 }}>
+                              <Typography sx={{ fontSize: '0.58rem', color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.4px' }}>Time</Typography>
+                              <Typography sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: '0.75rem', whiteSpace: 'nowrap' }}>
+                                {fmtTime(item.start_time)} – {fmtTime(item.end_time)}
+                              </Typography>
                             </Box>
-                            <Typography sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: '0.9rem' }}>
-                              {fmtTime(item.start_time)} – {fmtTime(item.end_time)}
-                            </Typography>
+
+                            <Divider orientation="vertical" flexItem />
+
+                            {/* Subject — gets the most space */}
+                            <Box sx={{ flex: 2, minWidth: 130 }}>
+                              <Typography sx={{ fontSize: '0.58rem', color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.4px' }}>Subject</Typography>
+                              <Typography sx={{ fontWeight: 600, color: '#1a1a2e', fontSize: '0.78rem' }}>{item.subject}</Typography>
+                            </Box>
+
+                            <Divider orientation="vertical" flexItem />
+
+                            {/* Room */}
+                            <Box sx={{ minWidth: 60, flexShrink: 0 }}>
+                              <Typography sx={{ fontSize: '0.58rem', color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.4px' }}>Room</Typography>
+                              <Chip label={item.room_number} size="small" sx={{ background: 'rgba(79,172,254,.1)', color: '#4facfe', fontWeight: 700, fontSize: '0.68rem', height: 20 }} />
+                            </Box>
+
+                            {/* Class */}
+                            {item.class_name && (
+                              <>
+                                <Divider orientation="vertical" flexItem />
+                                <Box sx={{ minWidth: 80, flexShrink: 0 }}>
+                                  <Typography sx={{ fontSize: '0.58rem', color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.4px' }}>Class</Typography>
+                                  <Typography sx={{ fontWeight: 600, color: '#555', fontSize: '0.72rem' }}>{item.class_name}</Typography>
+                                </Box>
+                              </>
+                            )}
                           </Box>
-
-                          <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-
-                          {/* Subject */}
-                          <Box sx={{ flex: 1, minWidth: 140 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.2 }}>
-                              <SubjectIcon sx={{ fontSize: 14, color: '#764ba2' }} />
-                              <Typography sx={{ fontSize: '0.7rem', color: '#aaa', fontWeight: 500 }}>SUBJECT</Typography>
-                            </Box>
-                            <Typography sx={{ fontWeight: 600, color: '#1a1a2e', fontSize: '0.88rem' }}>{item.subject}</Typography>
-                          </Box>
-
-                          {/* Room */}
-                          <Box sx={{ minWidth: 70 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.2 }}>
-                              <RoomIcon sx={{ fontSize: 14, color: '#4facfe' }} />
-                              <Typography sx={{ fontSize: '0.7rem', color: '#aaa', fontWeight: 500 }}>ROOM</Typography>
-                            </Box>
-                            <Chip label={item.room_number} size="small" sx={{ background: 'rgba(79,172,254,.1)', color: '#4facfe', fontWeight: 600, fontSize: '0.78rem' }} />
-                          </Box>
-
-                          {/* Class */}
-                          {item.class_name && (
-                            <Box sx={{ minWidth: 100 }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.2 }}>
-                                <SchoolIcon sx={{ fontSize: 14, color: '#f5576c' }} />
-                                <Typography sx={{ fontSize: '0.7rem', color: '#aaa', fontWeight: 500 }}>CLASS</Typography>
-                              </Box>
-                              <Typography sx={{ fontWeight: 600, color: '#555', fontSize: '0.85rem' }}>{item.class_name}</Typography>
-                            </Box>
-                          )}
-                        </Box>
-                      ))}
+                        ))}
+                      </Box>
                     </Box>
                   </Paper>
                 ))}
@@ -899,7 +876,7 @@ const ProfessorPage = () => {
             };
             const gradientArray = [g.primary, g.teal, g.mint, g.amber, g.warm, g.lavender];
             return (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 3 } }}>
                 {examScheduleData.length === 0 && (
                   <Box sx={{ textAlign: 'center', py: 8 }}>
                     <ExamDutyIcon sx={{ fontSize: 56, color: '#ddd', mb: 2 }} />
@@ -920,12 +897,12 @@ const ProfessorPage = () => {
                     {/* Date header */}
                     <Box sx={{
                       background: gradientArray[idx % gradientArray.length],
-                      px: 3, py: 1.8,
+                      px: { xs: 2, md: 3 }, py: { xs: 1.4, md: 1.8 },
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
                         <ExamDutyIcon sx={{ color: '#fff', fontSize: 22 }} />
-                        <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '.3px' }}>
+                        <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: { xs: '0.9rem', md: '1.05rem' }, letterSpacing: '.3px' }}>
                           {examDay.date}
                         </Typography>
                       </Box>
@@ -936,14 +913,14 @@ const ProfessorPage = () => {
                       />
                     </Box>
 
-                    {/* Exams inside */}
-                    <TableContainer>
-                      <Table size="small">
+                    {/* Exams inside — scroll-safe on mobile */}
+                    <Box sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                      <Table size="small" sx={{ minWidth: 420 }}>
                         <TableHead>
                           <TableRow sx={{ background: 'rgba(102,126,234,.03)' }}>
-                            <TableCell sx={{ fontWeight: 600, color: '#667eea', fontSize: '0.75rem', py: 1.5 }}>TIME</TableCell>
+                            <TableCell sx={{ fontWeight: 600, color: '#667eea', fontSize: '0.75rem', py: 1.5, whiteSpace: 'nowrap' }}>TIME</TableCell>
                             <TableCell sx={{ fontWeight: 600, color: '#764ba2', fontSize: '0.75rem', py: 1.5 }} align="center">SUBJECT</TableCell>
-                            <TableCell sx={{ fontWeight: 600, color: '#4facfe', fontSize: '0.75rem', py: 1.5 }} align="center">ROOM</TableCell>
+                            <TableCell sx={{ fontWeight: 600, color: '#4facfe', fontSize: '0.75rem', py: 1.5, whiteSpace: 'nowrap' }} align="center">ROOM</TableCell>
                             <TableCell sx={{ fontWeight: 600, color: '#f5576c', fontSize: '0.75rem', py: 1.5 }} align="center">TYPE</TableCell>
                           </TableRow>
                         </TableHead>
@@ -958,10 +935,10 @@ const ProfessorPage = () => {
                                 '&:nth-of-type(even)': { background: '#fafbff' },
                               }}
                             >
-                              <TableCell sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                              <TableCell sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
                                 {fmtTime(item.start_time)} – {fmtTime(item.end_time)}
                               </TableCell>
-                              <TableCell sx={{ fontWeight: 600, color: '#1a1a2e', fontSize: '0.85rem' }} align="center">
+                              <TableCell sx={{ fontWeight: 600, color: '#1a1a2e', fontSize: '0.8rem' }} align="center">
                                 {item.subject}
                               </TableCell>
                               <TableCell align="center">
@@ -982,7 +959,7 @@ const ProfessorPage = () => {
                           ))}
                         </TableBody>
                       </Table>
-                    </TableContainer>
+                    </Box>
                   </Paper>
                 ))}
               </Box>
@@ -993,9 +970,9 @@ const ProfessorPage = () => {
           {tabIdx === 3 && (
             <Box>
               {/* Header */}
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3, flexWrap: 'wrap', gap: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <FormControl sx={{ minWidth: 140 }} size="small">
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'space-between', mb: 2.5, gap: 1.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FormControl sx={{ flex: 1, minWidth: 0 }} size="small">
                     <Select
                       value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}
                       sx={{ borderRadius: '12px', background: '#fff', fontWeight: 600, color: g.primary, '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(102,126,234,.3)' } }}
@@ -1003,7 +980,7 @@ const ProfessorPage = () => {
                       {monthLabels.map((m, i) => <MenuItem key={i} value={i}>{m}</MenuItem>)}
                     </Select>
                   </FormControl>
-                  <FormControl sx={{ minWidth: 100 }} size="small">
+                  <FormControl sx={{ width: 90, flexShrink: 0 }} size="small">
                     <Select
                       value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}
                       sx={{ borderRadius: '12px', background: '#fff', fontWeight: 600, color: g.primary, '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(102,126,234,.3)' } }}
@@ -1012,8 +989,8 @@ const ProfessorPage = () => {
                     </Select>
                   </FormControl>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                  <Typography sx={{ color: '#888', fontSize: '0.85rem', fontWeight: 500 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                  <Typography sx={{ color: '#888', fontSize: { xs: '0.75rem', md: '0.85rem' }, fontWeight: 500 }}>
                     {holidays.filter(h => h.startsWith(`${selectedYear}-${selectedMonth}-`)).length} holiday(s)
                   </Typography>
                   <Button
@@ -1021,7 +998,8 @@ const ProfessorPage = () => {
                     startIcon={<HolidayIcon />}
                     onClick={() => setHolidayMode(m => !m)}
                     sx={{
-                      borderRadius: '14px', textTransform: 'none', fontWeight: 700, px: 2.5, py: 1,
+                      borderRadius: '14px', textTransform: 'none', fontWeight: 700, px: { xs: 1.5, md: 2.5 }, py: { xs: 0.8, md: 1 },
+                      fontSize: { xs: '0.72rem', md: '0.82rem' },
                       background: holidayMode ? g.amber : 'transparent',
                       borderColor: '#f7971e',
                       color: holidayMode ? '#fff' : '#f7971e',
@@ -1039,7 +1017,8 @@ const ProfessorPage = () => {
                     startIcon={<CalendarIcon />}
                     onClick={() => { setEditPickerDate(attendanceDate); setEditAttOpen(true); }}
                     sx={{
-                      borderRadius: '14px', textTransform: 'none', fontWeight: 700, px: 2.5, py: 1,
+                      borderRadius: '14px', textTransform: 'none', fontWeight: 700, px: { xs: 1.5, md: 2.5 }, py: { xs: 0.8, md: 1 },
+                      fontSize: { xs: '0.72rem', md: '0.82rem' },
                       borderColor: '#667eea', color: '#667eea',
                       '&:hover': { background: 'rgba(102,126,234,.08)', borderColor: '#667eea' },
                       transition: 'all .3s ease',
@@ -1052,7 +1031,7 @@ const ProfessorPage = () => {
                   <Modal open={editAttOpen} onClose={() => setEditAttOpen(false)}>
                     <Box sx={{
                       position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
-                      background: '#fff', borderRadius: '20px', p: 3.5, minWidth: 320,
+                      background: '#fff', borderRadius: '20px', p: { xs: 2.5, md: 3.5 }, width: { xs: '88%', sm: 320 },
                       boxShadow: '0 24px 60px rgba(0,0,0,.2)', outline: 'none',
                     }}>
                       <Typography sx={{ fontWeight: 700, fontSize: '1.05rem', color: '#1a1a2e', mb: 2 }}>
@@ -1100,35 +1079,36 @@ const ProfessorPage = () => {
               </Box>
 
               {/* Legend */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', gap: { xs: 1, md: 2 }, mb: 2, flexWrap: 'wrap' }}>
                 {[
-                  { label: 'Working Day', color: g.green },
+                  { label: 'Working', color: g.green },
                   { label: 'Sunday', color: 'linear-gradient(135deg,#f5576c,#f093fb)' },
                   { label: 'Holiday', color: g.amber },
                   { label: 'Today', color: g.primary },
                 ].map(l => (
-                  <Box key={l.label} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 14, height: 14, borderRadius: '4px', background: l.color }} />
-                    <Typography sx={{ fontSize: '0.78rem', color: '#666', fontWeight: 500 }}>{l.label}</Typography>
+                  <Box key={l.label} sx={{ display: 'flex', alignItems: 'center', gap: 0.7 }}>
+                    <Box sx={{ width: { xs: 10, md: 14 }, height: { xs: 10, md: 14 }, borderRadius: '4px', background: l.color }} />
+                    <Typography sx={{ fontSize: { xs: '0.68rem', md: '0.78rem' }, color: '#666', fontWeight: 500 }}>{l.label}</Typography>
                   </Box>
                 ))}
               </Box>
 
               {/* Weekday header */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1, mb: 1 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: { xs: 0.4, md: 0.8 }, mb: 0.5 }}>
                 {weekDayLabels.map(d => (
-                  <Box key={d} sx={{ textAlign: 'center', py: 0.8 }}>
+                  <Box key={d} sx={{ textAlign: 'center', py: { xs: 0.3, md: 0.6 } }}>
                     <Typography sx={{
-                      fontWeight: 700, fontSize: '0.75rem', letterSpacing: '.5px',
+                      fontWeight: 700,
+                      fontSize: { xs: '0.55rem', sm: '0.65rem', md: '0.75rem' },
                       color: d === 'Sun' ? '#f5576c' : '#667eea',
                       textTransform: 'uppercase',
-                    }}>{d}</Typography>
+                    }}>{d.slice(0, 2)}</Typography>
                   </Box>
                 ))}
               </Box>
 
-              {/* Empty offset cells for first day of month */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
+              {/* Calendar grid */}
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: { xs: 0.4, md: 0.8 } }}>
                 {Array.from({ length: monthDays[0].weekday }).map((_, i) => (
                   <Box key={`empty-${i}`} />
                 ))}
@@ -1149,9 +1129,11 @@ const ProfessorPage = () => {
                       key={day}
                       onClick={() => toggleHoliday(day)}
                       sx={{
-                        borderRadius: '14px',
+                        borderRadius: { xs: '8px', sm: '10px', md: '14px' },
                         background: bg,
-                        p: 1.5,
+                        p: { xs: 0.6, sm: 0.9, md: 1.5 },
+                        minHeight: { xs: 32, sm: 40, md: 52 },
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                         textAlign: 'center',
                         boxShadow: `0 4px 14px ${shadowColor}`,
                         cursor: holidayMode && !isSunday ? 'pointer' : 'default',
@@ -1163,15 +1145,15 @@ const ProfessorPage = () => {
                         } : {},
                       }}
                     >
-                      <Typography sx={{ fontWeight: 800, fontSize: '1rem', color: '#fff', lineHeight: 1 }}>{day}</Typography>
-                      <Typography sx={{ fontSize: '0.62rem', color: 'rgba(255,255,255,.8)', fontWeight: 500, mt: 0.3 }}>
-                        {weekDayLabels[weekday]}
+                      <Typography sx={{ fontWeight: 800, fontSize: { xs: '0.72rem', sm: '0.85rem', md: '1rem' }, color: '#fff', lineHeight: 1 }}>{day}</Typography>
+                      <Typography sx={{ fontSize: { xs: '0.5rem', md: '0.6rem' }, color: 'rgba(255,255,255,.8)', fontWeight: 500, mt: 0.2, display: { xs: 'none', sm: 'block' } }}>
+                        {weekDayLabels[weekday].slice(0, 2)}
                       </Typography>
                       {isHoliday && !isSunday && (
-                        <Typography sx={{ fontSize: '0.6rem', color: 'rgba(255,255,255,.9)', fontWeight: 700, mt: 0.3, letterSpacing: '.3px' }}>HOLIDAY</Typography>
+                        <Typography sx={{ fontSize: { xs: '0.45rem', md: '0.55rem' }, color: 'rgba(255,255,255,.9)', fontWeight: 700, mt: 0.2, display: { xs: 'none', sm: 'block' } }}>HOL</Typography>
                       )}
                       {isToday && (
-                        <Box sx={{ width: 5, height: 5, borderRadius: '50%', background: '#fff', mx: 'auto', mt: 0.5 }} />
+                        <Box sx={{ width: { xs: 3, md: 5 }, height: { xs: 3, md: 5 }, borderRadius: '50%', background: '#fff', mx: 'auto', mt: 0.3 }} />
                       )}
                     </Box>
                   );
@@ -1192,15 +1174,15 @@ const ProfessorPage = () => {
           }}
         >
           {/* Header */}
-          <Box sx={{ background: g.primary, p: 3, borderRadius: '24px 24px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <WalletIcon sx={{ color: '#fff', fontSize: 28 }} />
-              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.15rem' }}>Salary & Payment Details</Typography>
+          <Box sx={{ background: g.primary, p: { xs: 2, md: 3 }, borderRadius: '24px 24px 0 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 0 }}>
+              <WalletIcon sx={{ color: '#fff', fontSize: { xs: 22, md: 28 }, flexShrink: 0 }} />
+              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: { xs: '0.95rem', md: '1.15rem' }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Salary & Payment</Typography>
             </Box>
-            <IconButton onClick={() => setMoreOpen(false)} sx={{ color: '#fff' }}><CloseIcon /></IconButton>
+            <IconButton onClick={() => setMoreOpen(false)} sx={{ color: '#fff', flexShrink: 0 }}><CloseIcon /></IconButton>
           </Box>
 
-          <Box sx={{ p: 3 }}>
+          <Box sx={{ p: { xs: 2, md: 3 } }}>
             {/* ── Top: Salary + Total Paid ── */}
             {(() => {
               const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1224,17 +1206,17 @@ const ProfessorPage = () => {
 
               return (
                 <>
-                  <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                    <Box sx={{ flex: 1, p: 2.5, borderRadius: '16px', background: g.primary, color: '#fff', textAlign: 'center' }}>
+                  <Box sx={{ display: 'flex', gap: { xs: 1.5, md: 2 }, mb: 3, flexDirection: { xs: 'column', sm: 'row' } }}>
+                    <Box sx={{ flex: 1, p: { xs: 2, md: 2.5 }, borderRadius: '16px', background: g.primary, color: '#fff', textAlign: 'center' }}>
                       <Typography sx={{ fontSize: '0.7rem', opacity: .8, textTransform: 'uppercase', letterSpacing: '.7px' }}>Base Salary</Typography>
-                      <Typography sx={{ fontWeight: 800, fontSize: '1.4rem', mt: 0.5 }}>
+                      <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.2rem', md: '1.4rem' }, mt: 0.5 }}>
                         ₹{Number(professorDetails?.admin_employement?.salary ?? 0).toLocaleString()}
                       </Typography>
                       <Typography sx={{ fontSize: '0.72rem', opacity: .7, mt: 0.3 }}>per month</Typography>
                     </Box>
-                    <Box sx={{ flex: 1, p: 2.5, borderRadius: '16px', background: g.green, color: '#000', textAlign: 'center' }}>
+                    <Box sx={{ flex: 1, p: { xs: 2, md: 2.5 }, borderRadius: '16px', background: g.green, color: '#000', textAlign: 'center' }}>
                       <Typography sx={{ fontSize: '0.7rem', opacity: .8, textTransform: 'uppercase', letterSpacing: '.7px' }}>Total Paid ({paymentYear})</Typography>
-                      <Typography sx={{ fontWeight: 800, fontSize: '1.4rem', mt: 0.5 }}>
+                      <Typography sx={{ fontWeight: 800, fontSize: { xs: '1.2rem', md: '1.4rem' }, mt: 0.5 }}>
                         ₹{totalPaid.toLocaleString()}
                       </Typography>
                       <Typography sx={{ fontSize: '0.72rem', opacity: .7, mt: 0.3 }}>{Object.keys(paidMap).length} of 12 months</Typography>
@@ -1268,7 +1250,7 @@ const ProfessorPage = () => {
                           key={mIdx}
                           sx={{
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            p: 1.8, borderRadius: '14px',
+                            p: { xs: 1.2, md: 1.8 }, borderRadius: '14px',
                             background: isPaid ? 'rgba(67,233,123,.06)' : 'rgba(247,151,30,.04)',
                             border: `1.5px solid ${isPaid ? 'rgba(67,233,123,.25)' : 'rgba(200,200,200,.4)'}`,
                             transition: 'all .25s ease',
@@ -1287,7 +1269,7 @@ const ProfessorPage = () => {
                                 : <PendingIcon sx={{ fontSize: 18, color: '#fff' }} />}
                             </Box>
                             <Box>
-                              <Typography sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: '0.9rem' }}>{mName}</Typography>
+                              <Typography sx={{ fontWeight: 700, color: '#1a1a2e', fontSize: { xs: '0.82rem', md: '0.9rem' } }}>{mName}</Typography>
                               <Chip
                                 label={isPaid ? 'Paid' : 'Unpaid'}
                                 size="small"
@@ -1300,7 +1282,7 @@ const ProfessorPage = () => {
                               />
                             </Box>
                           </Box>
-                          <Typography sx={{ fontWeight: 800, color: isPaid ? '#1a1a2e' : '#ccc', fontSize: '1rem' }}>
+                          <Typography sx={{ fontWeight: 800, color: isPaid ? '#1a1a2e' : '#ccc', fontSize: { xs: '0.85rem', md: '1rem' } }}>
                             {isPaid ? `₹${amount.toLocaleString()}` : '—'}
                           </Typography>
                         </Box>
@@ -1322,8 +1304,8 @@ const ProfessorPage = () => {
               <Typography sx={{ color: '#888', fontSize: '0.8rem', mb: 2 }}>
                 Scan to view faculty details — name, ID, department & subjects
               </Typography>
-              <Box sx={{ display: 'inline-block', p: 2.5, borderRadius: '20px', background: '#fff', border: '2px solid rgba(102,126,234,.15)', boxShadow: '0 8px 30px rgba(102,126,234,.1)' }}>
-                <QRCodeSVG value={qrData} size={180} level="H" includeMargin fgColor="#1a1a2e" />
+              <Box sx={{ display: 'inline-block', p: { xs: 1.5, md: 2.5 }, borderRadius: '20px', background: '#fff', border: '2px solid rgba(102,126,234,.15)', boxShadow: '0 8px 30px rgba(102,126,234,.1)' }}>
+                <QRCodeSVG value={qrData} size={150} level="H" includeMargin fgColor="#1a1a2e" />
               </Box>
             </Box>
 
